@@ -1,8 +1,6 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import $ from 'jquery';
-
 import SearchResults from './search_results.jsx';
 import RhsThread from './rhs_thread.jsx';
 import SearchStore from 'stores/search_store.jsx';
@@ -32,8 +30,6 @@ export default class SidebarRight extends React.Component {
         this.onShrink = this.onShrink.bind(this);
         this.toggleSize = this.toggleSize.bind(this);
 
-        this.doStrangeThings = this.doStrangeThings.bind(this);
-
         this.state = {
             searchVisible: SearchStore.getSearchResults() !== null,
             isMentionSearch: SearchStore.getIsMentionSearch(),
@@ -51,7 +47,6 @@ export default class SidebarRight extends React.Component {
         SearchStore.addShowSearchListener(this.onShowSearch);
         UserStore.addChangeListener(this.onUserChange);
         PreferenceStore.addChangeListener(this.onPreferenceChange);
-        this.doStrangeThings();
     }
 
     componentWillUnmount() {
@@ -75,35 +70,9 @@ export default class SidebarRight extends React.Component {
         }
     }
 
-    doStrangeThings() {
-        // We should have a better way to do this stuff
-        // Hence the function name.
-        $('.app__body .inner-wrap').removeClass('.move--right');
-        $('.app__body .inner-wrap').addClass('move--left');
-        $('.app__body .sidebar--left').removeClass('move--right');
-        $('.app__body .sidebar--right').addClass('move--left');
-
-        //$('.sidebar--right').prepend('<div class="sidebar__overlay"></div>');
-        if (!this.state.searchVisible && !this.state.postRightVisible) {
-            $('.app__body .inner-wrap').removeClass('move--left').removeClass('move--right');
-            $('.app__body .sidebar--right').removeClass('move--left');
-            return (
-                <div/>
-            );
-        }
-
-        /*setTimeout(() => {
-            $('.sidebar__overlay').fadeOut('200', () => {
-                $('.sidebar__overlay').remove();
-            });
-            }, 500);*/
-        return null;
-    }
-
     componentDidUpdate() {
         const isOpen = this.state.searchVisible || this.state.postRightVisible;
         WebrtcStore.emitRhsChanged(isOpen);
-        this.doStrangeThings();
     }
 
     onPreferenceChange() {
@@ -159,7 +128,10 @@ export default class SidebarRight extends React.Component {
         let expandedClass = '';
 
         if (this.state.expanded) {
-            expandedClass = 'sidebar--right--expanded';
+            expandedClass += ' sidebar--right--expanded';
+        }
+        if (this.props.isVisible) {
+            expandedClass += ' move--left';
         }
 
         if (this.state.searchVisible) {
@@ -203,3 +175,7 @@ export default class SidebarRight extends React.Component {
         );
     }
 }
+
+SidebarRight.propTypes = {
+    isVisible: React.PropTypes.bool.isRequired
+};

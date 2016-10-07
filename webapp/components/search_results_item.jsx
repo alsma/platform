@@ -33,10 +33,6 @@ export default class SearchResultsItem extends React.Component {
         this.flagPost = this.flagPost.bind(this);
     }
 
-    hideSidebar() {
-        $('.sidebar--right').removeClass('move--left');
-    }
-
     shrinkSidebar() {
         setTimeout(() => {
             this.props.shrink();
@@ -233,7 +229,7 @@ export default class SearchResultsItem extends React.Component {
                                                         postId: null
                                                     });
 
-                                                    this.hideSidebar();
+                                                    GlobalActions.hideRightSlideableView();
                                                 }
                                                 this.shrinkSidebar();
                                                 browserHistory.push(TeamStore.getCurrentTeamRelativeUrl() + '/pl/' + post.id);

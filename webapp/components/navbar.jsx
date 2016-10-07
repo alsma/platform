@@ -1,7 +1,6 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import $ from 'jquery';
 import EditChannelHeaderModal from './edit_channel_header_modal.jsx';
 import EditChannelPurposeModal from './edit_channel_purpose_modal.jsx';
 import MessageWrapper from './message_wrapper.jsx';
@@ -83,7 +82,6 @@ export default class Navbar extends React.Component {
         ChannelStore.addChangeListener(this.onChange);
         ChannelStore.addExtraInfoChangeListener(this.onChange);
         UserStore.addStatusesChangeListener(this.onChange);
-        $('.inner-wrap').click(this.hideSidebars);
         document.addEventListener('keydown', this.showChannelSwitchModal);
     }
 
@@ -110,39 +108,8 @@ export default class Navbar extends React.Component {
         );
     }
 
-    hideSidebars(e) {
-        var windowWidth = $(window).outerWidth();
-        if (windowWidth <= 768) {
-            AppDispatcher.handleServerAction({
-                type: ActionTypes.RECEIVED_SEARCH,
-                results: null
-            });
-
-            AppDispatcher.handleServerAction({
-                type: ActionTypes.RECEIVED_POST_SELECTED,
-                postId: null
-            });
-
-            if (e.target.className !== 'navbar-toggle' && e.target.className !== 'icon-bar') {
-                $('.app__body .inner-wrap').removeClass('move--right move--left move--left-small');
-                $('.app__body .sidebar--left').removeClass('move--right');
-                $('.app__body .sidebar--right').removeClass('move--left');
-                $('.app__body .sidebar--menu').removeClass('move--left');
-            }
-        }
-    }
-
-    toggleLeftSidebar() {
-        $('.app__body .inner-wrap').toggleClass('move--right');
-        $('.app__body .sidebar--left').toggleClass('move--right');
-    }
-
-    toggleRightSidebar() {
-        $('.app__body .inner-wrap').toggleClass('move--left-small');
-        $('.app__body .sidebar--menu').toggleClass('move--left');
-    }
-
     showSearch() {
+        this.props.onRightSlideableViewToggle();
         AppDispatcher.handleServerAction({
             type: ActionTypes.SHOW_SEARCH
         });
@@ -509,7 +476,11 @@ export default class Navbar extends React.Component {
                     className='navbar-toggle'
                     data-toggle='collapse'
                     data-target='#sidebar-nav'
-                    onClick={this.toggleLeftSidebar}
+                    onClick={e => {
+                        e.stopPropagation();
+
+                        this.props.onLeftSidebarToggle();
+                    }}
                 >
                     <span className='sr-only'>
                         <FormattedMessage
@@ -531,7 +502,11 @@ export default class Navbar extends React.Component {
                     className='navbar-toggle menu-toggle pull-right'
                     data-toggle='collapse'
                     data-target='#sidebar-nav'
-                    onClick={this.toggleRightSidebar}
+                    onClick={e => {
+                        e.stopPropagation();
+
+                        this.props.onRightSidebarToggle();
+                    }}
                 >
                     <span dangerouslySetInnerHTML={{__html: Constants.MENU_ICON}}/>
                 </button>
@@ -725,5 +700,8 @@ Navbar.defaultProps = {
     teamDisplayName: ''
 };
 Navbar.propTypes = {
-    teamDisplayName: React.PropTypes.string
+    teamDisplayName: React.PropTypes.string,
+    onLeftSidebarToggle: React.PropTypes.func,
+    onRightSidebarToggle: React.PropTypes.func,
+    onRightSlideableViewToggle: React.PropTypes.func
 };

@@ -11,6 +11,7 @@ import {FormattedMessage, FormattedHTMLMessage} from 'react-intl';
 
 const Preferences = Constants.Preferences;
 import * as Utils from 'utils/utils.jsx';
+import * as GlobalActions from 'actions/global_actions.jsx';
 
 import {Overlay} from 'react-bootstrap';
 
@@ -53,10 +54,7 @@ export default class TutorialTip extends React.Component {
     }
     closeRightSidebar() {
         if (Utils.isMobile()) {
-            setTimeout(() => {
-                document.querySelector('.app__body .inner-wrap').classList.remove('move--left-small');
-                document.querySelector('.app__body .sidebar--menu').classList.remove('move--left');
-            });
+            GlobalActions.hideRightSidebar();
         }
     }
     skipTutorial(e) {

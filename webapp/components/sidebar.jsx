@@ -10,9 +10,12 @@ import UnreadChannelIndicator from './unread_channel_indicator.jsx';
 import TutorialTip from './tutorial/tutorial_tip.jsx';
 import StatusIcon from './status_icon.jsx';
 
+import * as GlobalActions from 'actions/global_actions.jsx';
+
 import ChannelStore from 'stores/channel_store.jsx';
 import UserStore from 'stores/user_store.jsx';
 import TeamStore from 'stores/team_store.jsx';
+import SidebarStore from 'stores/sidebar_store.jsx';
 import PreferenceStore from 'stores/preference_store.jsx';
 import LocalizationStore from 'stores/localization_store.jsx';
 
@@ -21,6 +24,7 @@ import * as Utils from 'utils/utils.jsx';
 import * as ChannelActions from 'actions/channel_actions.jsx';
 
 import Constants from 'utils/constants.jsx';
+const ActionTypes = Constants.ActionTypes;
 
 import {FormattedMessage, FormattedHTMLMessage} from 'react-intl';
 
@@ -176,7 +180,7 @@ export default class Sidebar extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (!Utils.areObjectsEqual(nextState, this.state)) {
+        if (!Utils.areObjectsEqual(nextState, this.state) || this.props.isVisible !== nextProps.isVisible) {
             return true;
         }
         return false;
@@ -197,8 +201,7 @@ export default class Sidebar extends React.Component {
 
         // close the LHS on mobile when you change channels
         if (this.state.activeId !== prevState.activeId) {
-            $('.app__body .inner-wrap').removeClass('move--right');
-            $('.app__body .sidebar--left').removeClass('move--right');
+            GlobalActions.hideLeftSidebar();
         }
     }
 
@@ -208,6 +211,7 @@ export default class Sidebar extends React.Component {
         UserStore.removeStatusesChangeListener(this.onChange);
         TeamStore.removeChangeListener(this.onChange);
         PreferenceStore.removeChangeListener(this.onChange);
+
         document.removeEventListener('keydown', this.navigateChannelShortcut);
         document.removeEventListener('keydown', this.navigateUnreadChannelShortcut);
     }
@@ -416,8 +420,7 @@ export default class Sidebar extends React.Component {
     openLeftSidebar() {
         if (Utils.isMobile()) {
             setTimeout(() => {
-                document.querySelector('.app__body .inner-wrap').classList.add('move--right');
-                document.querySelector('.app__body .sidebar--left').classList.add('move--right');
+                GlobalActions.showLeftSidebar();
             });
         }
     }
@@ -757,9 +760,14 @@ export default class Sidebar extends React.Component {
             }
         }
 
+        let classNames = 'sidebar--left';
+        if (this.props.isVisible) {
+            classNames += ' move--right';
+        }
+
         return (
             <div
-                className='sidebar--left'
+                className={classNames}
                 id='sidebar-left'
                 key='sidebar-left'
             >
@@ -852,3 +860,7 @@ export default class Sidebar extends React.Component {
         );
     }
 }
+
+Sidebar.propTypes = {
+    isVisible: React.PropTypes.bool.isRequired
+};

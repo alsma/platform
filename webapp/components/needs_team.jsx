@@ -12,8 +12,11 @@ import TeamStore from 'stores/team_store.jsx';
 import UserStore from 'stores/user_store.jsx';
 import PreferenceStore from 'stores/preference_store.jsx';
 import ChannelStore from 'stores/channel_store.jsx';
+import SidebarStore from 'stores/sidebar_store.jsx';
 import * as GlobalActions from 'actions/global_actions.jsx';
+import AppDispatcher from '../dispatcher/app_dispatcher.jsx';
 import Constants from 'utils/constants.jsx';
+const ActionTypes = Constants.ActionTypes;
 const TutorialSteps = Constants.TutorialSteps;
 const Preferences = Constants.Preferences;
 
@@ -48,12 +51,14 @@ export default class NeedsTeam extends React.Component {
 
         this.onTeamChanged = this.onTeamChanged.bind(this);
         this.onPreferencesChanged = this.onPreferencesChanged.bind(this);
+        this.onSidebarChanged = this.onSidebarChanged.bind(this);
 
         const team = TeamStore.getCurrent();
 
         this.state = {
             team,
-            theme: PreferenceStore.getTheme(team.id)
+            theme: PreferenceStore.getTheme(team.id),
+            sidebars: SidebarStore.getState()
         };
     }
 
@@ -74,6 +79,26 @@ export default class NeedsTeam extends React.Component {
         }
     }
 
+    onSidebarChanged(state) {
+        this.setState({ sidebars: state });
+    }
+
+    hideSidebars(e) {
+        if (Utils.isMobile()) {
+            // TODO think where these should be moved
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_SEARCH,
+                results: null
+            });
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_POST_SELECTED,
+                postId: null
+            });
+
+            GlobalActions.hideSidebars();
+        }
+    }
+
     componentWillMount() {
         // Go to tutorial if we are first arriving
         const tutorialStep = PreferenceStore.getInt(Preferences.TUTORIAL_STEP, UserStore.getCurrentId(), 999);
@@ -85,6 +110,9 @@ export default class NeedsTeam extends React.Component {
     componentDidMount() {
         TeamStore.addChangeListener(this.onTeamChanged);
         PreferenceStore.addChangeListener(this.onPreferencesChanged);
+        SidebarStore.addChangeListener(this.onSidebarChanged);
+
+        $('.inner-wrap').on('click.sidebarHandler', this.hideSidebars);
 
         // Emit view action
         GlobalActions.viewLoggedIn();
@@ -122,8 +150,10 @@ export default class NeedsTeam extends React.Component {
     componentWillUnmount() {
         TeamStore.removeChangeListener(this.onTeamChanged);
         PreferenceStore.removeChangeListener(this.onPreferencesChanged);
+        SidebarStore.removeChangeListener(this.onSidebarChanged);
         $(window).off('focus');
         $(window).off('blur');
+        $('.inner-wrap').off('click.sidebarHandler');
 
         if (UserAgent.isIosSafari()) {
             iNoBounce.disable();
@@ -135,20 +165,31 @@ export default class NeedsTeam extends React.Component {
         if (this.props.children) {
             content = this.props.children;
         } else {
-            content.push(
-                this.props.navbar
-            );
-            content.push(
-                this.props.sidebar
-            );
+            content.push(React.cloneElement(this.props.sidebar, { isVisible: this.state.sidebars.left }));
+
+            let classNames = 'inner-wrap channel__wrap';
+            if (this.state.sidebars.left) {
+                classNames += ' move--right';
+            }
+            if (this.state.sidebars.right) {
+                classNames += ' move--left-small';
+            }
+            if (this.state.sidebars.rightSlideableView) {
+                classNames += ' move--left';
+            }
+
             content.push(
                 <div
                     key='inner-wrap'
-                    className='inner-wrap channel__wrap'
+                    className={classNames}
                 >
                     <div className='row header'>
                         <div id='navbar'>
-                            <Navbar/>
+                            <Navbar
+                                onLeftSidebarToggle={GlobalActions.showLeftSidebar}
+                                onRightSidebarToggle={GlobalActions.showRightSidebar}
+                                onRightSlideableViewToggle={GlobalActions.showRightSlideableView}
+                            />
                         </div>
                     </div>
                     <div className='row main'>
@@ -165,8 +206,8 @@ export default class NeedsTeam extends React.Component {
                 <ErrorBar/>
                 <WebrtcNotification/>
                 <div className='container-fluid'>
-                    <SidebarRight/>
-                    <SidebarRightMenu teamType={this.state.team.type}/>
+                    <SidebarRight isVisible={this.state.sidebars.rightSlideableView}/>
+                    <SidebarRightMenu teamType={this.state.team.type} isVisible={this.state.sidebars.right}/>
                     <WebrtcSidebar/>
                     {content}
 

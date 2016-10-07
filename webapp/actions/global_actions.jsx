@@ -323,6 +323,52 @@ export function showLeaveTeamModal() {
     });
 }
 
+export function showLeftSidebar() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_LEFT_SIDEBAR,
+        value: true
+    });
+}
+
+export function hideLeftSidebar() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_LEFT_SIDEBAR,
+        value: false
+    });
+}
+
+export function showRightSidebar() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_RIGHT_SIDEBAR,
+        value: true
+    });
+}
+
+export function hideRightSidebar() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_RIGHT_SIDEBAR,
+        value: false
+    });
+}
+
+export function showRightSlideableView() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_RIGHT_SLIDEABLE_VIEW,
+        value: true
+    });
+}
+
+export function hideRightSlideableView() {
+    AppDispatcher.handleViewAction({
+        type: ActionTypes.TOGGLE_RIGHT_SLIDEABLE_VIEW,
+        value: false
+    });
+}
+
+export function hideSidebars() {
+    AppDispatcher.handleViewAction({ type: ActionTypes.HIDE_SIDEBARS });
+}
+
 export function emitSuggestionPretextChanged(suggestionId, pretext) {
     AppDispatcher.handleViewAction({
         type: ActionTypes.SUGGESTION_PRETEXT_CHANGED,

@@ -122,24 +122,19 @@ export default class SidebarRightMenu extends React.Component {
 
     closeLeftSidebar() {
         if (Utils.isMobile()) {
-            setTimeout(() => {
-                document.querySelector('.app__body .inner-wrap').classList.remove('move--right');
-                document.querySelector('.app__body .sidebar--left').classList.remove('move--right');
-            });
+            setTimeout(GlobalActions.hideLeftSidebar);
         }
     }
 
     openRightSidebar() {
         if (Utils.isMobile()) {
-            setTimeout(() => {
-                document.querySelector('.app__body .inner-wrap').classList.add('move--left-small');
-                document.querySelector('.app__body .sidebar--menu').classList.add('move--left');
-            });
+            setTimeout(GlobalActions.showRightSidebar);
         }
     }
 
     hideSidebars() {
         if (Utils.isMobile()) {
+            // TODO think where these should be moved
             AppDispatcher.handleServerAction({
                 type: ActionTypes.RECEIVED_SEARCH,
                 results: null
@@ -150,10 +145,7 @@ export default class SidebarRightMenu extends React.Component {
                 postId: null
             });
 
-            document.querySelector('.app__body .inner-wrap').classList.remove('move--right', 'move--left', 'move--left-small');
-            document.querySelector('.app__body .sidebar--left').classList.remove('move--right');
-            document.querySelector('.app__body .sidebar--right').classList.remove('move--left');
-            document.querySelector('.app__body .sidebar--menu').classList.remove('move--left');
+            GlobalActions.hideSidebars();
         }
     }
 
@@ -348,9 +340,14 @@ export default class SidebarRightMenu extends React.Component {
             );
         }
 
+        let className = 'sidebar--menu';
+        if(this.props.isVisible) {
+            className += ' move--left'
+        }
+
         return (
             <div
-                className='sidebar--menu'
+                className={className}
                 id='sidebar-menu'
             >
                 <div className='team__header theme'>
@@ -464,5 +461,6 @@ export default class SidebarRightMenu extends React.Component {
 
 SidebarRightMenu.propTypes = {
     teamType: React.PropTypes.string,
-    teamDisplayName: React.PropTypes.string
+    teamDisplayName: React.PropTypes.string,
+    isVisible: React.PropTypes.bool.isRequired
 };
