@@ -55,12 +55,12 @@
     },
     "SqlSettings": {
         "DriverName": "mysql",
-        "DataSource": "mmuser:mostest@tcp(dockerhost:3306)/mattermost_test?charset=utf8mb4,utf8",
+        "DataSource": "mmuser:mostest@tcp(dockerhost:3307)/mattermost_test?charset=utf8mb4,utf8",
         "DataSourceReplicas": [],
         "MaxIdleConns": 10,
         "MaxOpenConns": 10,
         "Trace": false,
-        "AtRestEncryptKey": ""
+        "AtRestEncryptKey": "y3xbm7794kunu7xyiht8u48fi3pyk9bu"
     },
     "LogSettings": {
         "EnableConsole": false,
@@ -84,7 +84,7 @@
         "DriverName": "local",
         "Directory": "./data/",
         "EnablePublicLink": false,
-        "PublicLinkSalt": "",
+        "PublicLinkSalt": "yd81rp3eegkhyureqn85eoxpqdj3zqgs",
         "ThumbnailWidth": 120,
         "ThumbnailHeight": 100,
         "PreviewWidth": 1024,
@@ -115,8 +115,8 @@
         "SMTPServer": "",
         "SMTPPort": "",
         "ConnectionSecurity": "",
-        "InviteSalt": "",
-        "PasswordResetSalt": "",
+        "InviteSalt": "7kcopywbahtx488nzgrhgh9d4r9fck3g",
+        "PasswordResetSalt": "aupqfezcypxowc7i313psthudmx7q1ed",
         "SendPushNotifications": false,
         "PushNotificationServer": "",
         "PushNotificationContents": "generic",
@@ -125,8 +125,9 @@
         "EmailBatchingInterval": 30
     },
     "RateLimitSettings": {
-        "EnableRateLimiter": true,
+        "Enable": false,
         "PerSec": 10,
+        "MaxBurst": 100,
         "MemoryStoreSize": 10000,
         "VaryByRemoteAddr": true,
         "VaryByHeader": ""

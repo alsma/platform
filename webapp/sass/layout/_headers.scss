@@ -316,6 +316,12 @@
             width: 36px;
         }
 
+        .status {
+            position: absolute;
+            left: 35px;
+            top: 30px;
+        }
+
         .header__info {
             @include clearfix;
             color: $white;

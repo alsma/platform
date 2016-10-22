@@ -16,6 +16,8 @@ export default class StatusIcon extends React.Component {
         let statusIcon = '';
         if (status === 'online') {
             statusIcon = Constants.ONLINE_ICON_SVG;
+        } else if (status === 'dnd') {
+            statusIcon = Constants.DND_ICON_SVG;
         } else if (status === 'away') {
             statusIcon = Constants.AWAY_ICON_SVG;
         } else {

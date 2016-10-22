@@ -32,20 +32,16 @@ export default class SidebarHeader extends React.Component {
 
     render() {
         var me = UserStore.getCurrentUser();
-        var profilePicture = null;
-
         if (!me) {
             return null;
         }
 
-        if (me.last_picture_update) {
-            profilePicture = (
-                <img
-                    className='user__picture'
-                    src={Client.getUsersRoute() + '/' + me.id + '/image?time=' + me.update_at}
-                />
-            );
-        }
+        const profilePicture = (
+            <img
+                className='user__picture'
+                src={Client.getUsersRoute() + '/' + me.id + '/image?time=' + me.update_at}
+            />
+        );
 
         return (
             <div className='team__header theme'>

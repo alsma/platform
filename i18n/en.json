@@ -604,6 +604,22 @@
     "translation": "You are now online"
   },
   {
+    "id": "api.do_not_disturb.name",
+    "translation": "dnd"
+  },
+  {
+    "id": "api.do_not_disturb.desc",
+    "translation": "Activates Do Not Disturb mode"
+  },
+  {
+    "id": "api.do_not_disturb.hint",
+    "translation": "[hours]"
+  },
+  {
+    "id": "api.do_not_disturb.success",
+    "translation": "You will not receive notifications for this team for X hours or until Do Not Disturb is turned off."
+  },
+  {
     "id": "api.command_shortcuts.browser",
     "translation": "#### Built-in Browser Commands\n\nALT+LEFT: Previous channel in your history\nALT+RIGHT: Next channel in your history\nCTRL+PLUS: Increase font size (zoom in)\nCTRL+MINUS: Decrease font size (zoom out)\nSHIFT+UP (in input field): Highlight text to the previous line\nSHIFT+DOWN (in input field): Highlight text to the next line\nSHIFT+ENTER (in input field): Create a new line\n"
   },
